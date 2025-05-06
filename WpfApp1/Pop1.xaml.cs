@@ -32,11 +32,26 @@ namespace WpfApp1
 
         private void Button_Click_ok(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(imie.Text))
+            string? imiezmienna;
+            string? peselzmienna;
+            string? drugiezmienna;
+            string? nazwiskozmienna;
+            string? datazmienna;
+            string? nrzmienna;
+            string? adreszmienna;
+            string? miejscowosczmienna;
+            string? kodzmienna;
+
+            drugiezmienna = char.ToUpper(drugieimie.Text.Trim()[0]) + drugieimie.Text.Trim().Substring(1).ToLower();
+            drugiezmienna = drugiezmienna.Replace(" ", "");
+
+            if (string.IsNullOrEmpty(imie.Text))
             { imie.Background = Brushes.Red;
             }
             else
             {
+                imiezmienna=char.ToUpper(imie.Text.Trim()[0]) + imie.Text.Trim().Substring(1).ToLower();
+                imiezmienna = imiezmienna.Replace(" ", "");
                 imie.Background = Brushes.White;
             }
 
@@ -46,6 +61,18 @@ namespace WpfApp1
             }
             else
             {
+                string[] czlony = nazwisko.Text.Trim().Split('-');
+                for (int i = 0; i < czlony.Length; i++)
+                {
+                    if (czlony[i].Length > 0 && char.IsLetter(czlony[i][0]))
+                    {
+                        string pierwsza = czlony[i].Substring(0, 1).ToUpper();
+                        string reszta = czlony[i].Substring(1).ToLower();
+                        czlony[i] = pierwsza + reszta;
+                    }
+                }
+                nazwiskozmienna = string.Join("-", czlony);
+                nazwiskozmienna = nazwiskozmienna.Replace(" ", "");
                 nazwisko.Background = Brushes.White;
             }
 
@@ -66,21 +93,29 @@ namespace WpfApp1
             {
                 data.Background = Brushes.White;
             }
-            if (string.IsNullOrEmpty(nr.Text))
-            {
-                nr.Background = Brushes.Red;
-            }
-            else
-            {
-                nr.Background = Brushes.White;
-            }
+
+           
+
             if (string.IsNullOrEmpty(adres.Text))
             {
                 adres.Background = Brushes.Red;
             }
             else
             {
+                string[] slowa = adres.Text.Trim().Split(' ');
+                for (int i = 0; i < slowa.Length; i++)
+                {
+                    if (slowa[i].Length > 0 && char.IsLetter(slowa[i][0]))
+                    {
+                        string pierwsza = slowa[i].Substring(0, 1).ToUpper();
+                        string reszta = slowa[i].Substring(1).ToLower();
+                        slowa[i] = pierwsza + reszta;
+                    }
+                }
+               adreszmienna = string.Join(" ", slowa);
                 adres.Background = Brushes.White;
+            }
+
                 if (string.IsNullOrEmpty(miejscowosc.Text))
                 {
                     miejscowosc.Background = Brushes.Red;
@@ -89,14 +124,18 @@ namespace WpfApp1
                 {
                     miejscowosc.Background = Brushes.White;
                 }
+
                 if (string.IsNullOrEmpty(kod.Text))
                 {
                     kod.Background = Brushes.Red;
                 }
+
                 else
                 {
                     kod.Background = Brushes.White;
                 }
-            }
+
+                
+        }
     }
 }
