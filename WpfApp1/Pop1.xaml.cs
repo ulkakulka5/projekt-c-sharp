@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,10 +24,79 @@ namespace WpfApp1
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_cancel(object sender, RoutedEventArgs e)
         {
             Pop3 pop3 = new Pop3();
             pop3.ShowDialog();
         }
+
+        private void Button_Click_ok(object sender, RoutedEventArgs e)
+        {
+            if(string.IsNullOrEmpty(imie.Text))
+            { imie.Background = Brushes.Red;
+            }
+            else
+            {
+                imie.Background = Brushes.White;
+            }
+
+            if (string.IsNullOrEmpty(nazwisko.Text))
+            {
+                nazwisko.Background = Brushes.Red;
+            }
+            else
+            {
+                nazwisko.Background = Brushes.White;
+            }
+
+            if (string.IsNullOrEmpty(pesel.Text))
+            {
+               pesel.Background = Brushes.Red;
+            }
+            else
+            {
+                pesel.Background = Brushes.White;
+            }
+
+            if (string.IsNullOrEmpty(data.Text))
+            {
+                data.Background = Brushes.Red;
+            }
+            else
+            {
+                data.Background = Brushes.White;
+            }
+            if (string.IsNullOrEmpty(nr.Text))
+            {
+                nr.Background = Brushes.Red;
+            }
+            else
+            {
+                nr.Background = Brushes.White;
+            }
+            if (string.IsNullOrEmpty(adres.Text))
+            {
+                adres.Background = Brushes.Red;
+            }
+            else
+            {
+                adres.Background = Brushes.White;
+                if (string.IsNullOrEmpty(miejscowosc.Text))
+                {
+                    miejscowosc.Background = Brushes.Red;
+                }
+                else
+                {
+                    miejscowosc.Background = Brushes.White;
+                }
+                if (string.IsNullOrEmpty(kod.Text))
+                {
+                    kod.Background = Brushes.Red;
+                }
+                else
+                {
+                    kod.Background = Brushes.White;
+                }
+            }
     }
 }
