@@ -157,15 +157,75 @@ namespace WpfApp1
                             suma += (pesel.Text[j] - '0') * wagi[j];
                         }
 
-                        int cyfraKontrolna = (10 - (suma % 10)) % 10;
+                        int cyfrakontrolna = (10 - (suma % 10)) % 10;
 
-                        if (cyfraKontrolna != (pesel.Text[10] - '0'))
+                        if (cyfrakontrolna != (pesel.Text[10] - '0'))
                         {
                             pesel.Background = Brushes.Red;
                         }
+
+
+                       
+                            string dzien = pesel.Text.Substring(4, 2);
+                            int miesiac = int.Parse(pesel.Text.Substring(2, 2));
+                            string rok = pesel.Text.Substring(0, 2);
+                            int pelnyrok = 1900;
+
+                            if (miesiac >= 1 && miesiac <= 12)
+                                pelnyrok = 1900;
+                            else if (miesiac >= 21 && miesiac <= 32)
+                            {
+                                pelnyrok = 2000;
+                                miesiac -= 20;
+                            }
+                            else if (miesiac >= 41 && miesiac <= 52)
+                            {
+                                pelnyrok = 2100;
+                                miesiac -= 40;
+                            }
+                            else if (miesiac >= 61 && miesiac <= 72)
+                            {
+                                pelnyrok = 2200;
+                                miesiac -= 60;
+                            }
+                            else if (miesiac >= 81 && miesiac <= 92)
+                            {
+                                pelnyrok = 1800;
+                                miesiac -= 80;
+                            }
+
+                            string datapesel = pelnyrok.ToString() + "-" + miesiac.ToString("D2") + "-" + dzien; //decimal i 2 liczby, 3-->03, 10-->10
+                            string dataformularz = data.Text.Trim();
+
+                            if (dataformularz == datapesel)
+                            {
+                            pesel.Background = Brushes.White;
+                        }
+                        }
+
+                       
+                        
+                        if (!nr.Text.StartsWith("+48") && nr.Text.Length==9)
+                        {
+
+                        nrzmienna = "+48" + nr.Text;
+                        }
+                        else if(nr.Text.Length==11)
+                    {
+                        if (nr.Text.StartsWith("48"))
+                            nrzmienna = "+" + nr.Text;
+                        else
+                            nr.Background = Brushes.Red;
+                    }
+                        else {
+                        nr.Background = Brushes.Red;
+
+                        
                     }
 
-                    
+                    nrzmienna = nrzmienna.Replace(" ", "");
+
+
                 }
             }}
             
