@@ -135,7 +135,44 @@ namespace WpfApp1
                     kod.Background = Brushes.White;
                 }
 
-                
+           
+            if (pesel.Text.Length != 11)
+            {
+                pesel.Background = Brushes.Red;
+            }
+            else { for (int i = 0; i < pesel.Text.Length; i++)
+            {
+                if (!char.IsDigit(pesel.Text[i]))
+                {
+                    pesel.Background = Brushes.Red;
+                }
+                else
+                {
+
+                        int[] wagi = { 1, 3, 7, 9, 1, 3, 7, 9, 1, 3 };
+                        int suma = 0;
+
+                        for (int j = 0; i < 10; i++)
+                        {
+                            suma += (pesel.Text[j] - '0') * wagi[j];
+                        }
+
+                        int cyfraKontrolna = (10 - (suma % 10)) % 10;
+
+                        if (cyfraKontrolna != (pesel.Text[10] - '0'))
+                        {
+                            pesel.Background = Brushes.Red;
+                        }
+                    }
+
+                    
+                }
+            }}
+            
+
+            
+            
+
         }
     }
-}
+
