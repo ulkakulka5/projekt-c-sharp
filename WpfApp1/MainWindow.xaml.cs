@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,8 +19,23 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            List<string> items = new List<string>();
+            listauczniow.ItemsSource = items;
         }
+        public class Osoba
+        {
+            public required string Pesel { get; set; }
+            public required string Imie { get; set; }
 
+            public string? Drugieimie { get; set; }  
+            public required string Nazwisko { get; set; }    
+            public required string Data {  get; set; }
+            public string? Numer {  get; set; }
+            public required string Adres { get; set; }
+            public required string Miejscowosc {  get; set; }
+            public required string Kod {  get; set; }
+
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Pop1 pop1 = new Pop1();
@@ -32,5 +47,7 @@ namespace WpfApp1
             Pop2 pop2 = new Pop2();
             pop2.ShowDialog();
         }
+
+        
     }
 }
