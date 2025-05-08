@@ -37,27 +37,40 @@ namespace WpfApp1
             string? drugiezmienna;
             string? nazwiskozmienna;
             string? datazmienna;
-            string? nrzmienna;
+            string? nrzmienna = null;
             string? adreszmienna;
             string? miejscowosczmienna;
             string? kodzmienna;
+            bool dodac = false;
 
-            drugiezmienna = char.ToUpper(drugieimie.Text.Trim()[0]) + drugieimie.Text.Trim().Substring(1).ToLower();
-            drugiezmienna = drugiezmienna.Replace(" ", "");
-
-            if (string.IsNullOrEmpty(imie.Text))
-            { imie.Background = Brushes.Red;
+            if (!string.IsNullOrEmpty(drugieimie.Text))
+            {
+                drugiezmienna = char.ToUpper(drugieimie.Text.Trim()[0]) + drugieimie.Text.Trim().Substring(1).ToLower();
+                drugiezmienna = drugiezmienna.Replace(" ", "");
             }
             else
             {
-                imiezmienna=char.ToUpper(imie.Text.Trim()[0]) + imie.Text.Trim().Substring(1).ToLower();
+                drugiezmienna = "";
+            }
+
+
+            if (string.IsNullOrEmpty(imie.Text))
+            {
+                imie.Background = Brushes.Red;
+                dodac = false;
+            }
+            else
+            {
+                imiezmienna = char.ToUpper(imie.Text.Trim()[0]) + imie.Text.Trim().Substring(1).ToLower();
                 imiezmienna = imiezmienna.Replace(" ", "");
                 imie.Background = Brushes.White;
+                dodac = true;
             }
 
             if (string.IsNullOrEmpty(nazwisko.Text))
             {
                 nazwisko.Background = Brushes.Red;
+                dodac = false;
             }
             else
             {
@@ -74,31 +87,37 @@ namespace WpfApp1
                 nazwiskozmienna = string.Join("-", czlony);
                 nazwiskozmienna = nazwiskozmienna.Replace(" ", "");
                 nazwisko.Background = Brushes.White;
+                dodac = true;
             }
 
             if (string.IsNullOrEmpty(pesel.Text))
             {
-               pesel.Background = Brushes.Red;
+                pesel.Background = Brushes.Red;
+                dodac = false;
             }
             else
             {
                 pesel.Background = Brushes.White;
+                dodac = true;
             }
 
             if (string.IsNullOrEmpty(data.Text))
             {
                 data.Background = Brushes.Red;
+                dodac = false;
             }
             else
             {
                 data.Background = Brushes.White;
+                dodac = true;
             }
 
-           
+
 
             if (string.IsNullOrEmpty(adres.Text))
             {
                 adres.Background = Brushes.Red;
+                dodac = false;
             }
             else
             {
@@ -112,47 +131,67 @@ namespace WpfApp1
                         slowa[i] = pierwsza + reszta;
                     }
                 }
-               adreszmienna = string.Join(" ", slowa);
+                adreszmienna = string.Join(" ", slowa);
                 adres.Background = Brushes.White;
+                dodac = true;
             }
 
-                if (string.IsNullOrEmpty(miejscowosc.Text))
+            if (string.IsNullOrEmpty(miejscowosc.Text))
+            {
+                miejscowosc.Background = Brushes.Red;
+                dodac = false;
+            }
+            else
+            {
+                string[] slowam = miejscowosc.Text.Trim().Split(' ');
+                for (int i = 0; i < slowam.Length; i++)
                 {
-                    miejscowosc.Background = Brushes.Red;
+                    if (slowam[i].Length > 0 && char.IsLetter(slowam[i][0]))
+                    {
+                        string pierwsza = slowam[i].Substring(0, 1).ToUpper();
+                        string reszta = slowam[i].Substring(1).ToLower();
+                        slowam[i] = pierwsza + reszta;
+                    }
                 }
-                else
-                {
-                    miejscowosc.Background = Brushes.White;
-                }
+                miejscowosczmienna = string.Join(" ", slowam);
+                miejscowosc.Background = Brushes.White;
+                dodac = true;
+            }
 
-                if (string.IsNullOrEmpty(kod.Text))
-                {
-                    kod.Background = Brushes.Red;
-                }
+            if (string.IsNullOrEmpty(kod.Text))
+            {
+                kod.Background = Brushes.Red;
+                dodac = false;
+            }
 
-                else
-                {
-                    kod.Background = Brushes.White;
-                }
+            else
+            {
+                kod.Background = Brushes.White;
+                dodac = true;
+            }
 
-           
+
             if (pesel.Text.Length != 11)
             {
                 pesel.Background = Brushes.Red;
+                dodac = false;
             }
-            else { for (int i = 0; i < pesel.Text.Length; i++)
+            else
             {
-                if (!char.IsDigit(pesel.Text[i]))
+                for (int i = 0; i < pesel.Text.Length; i++)
                 {
-                    pesel.Background = Brushes.Red;
-                }
-                else
-                {
+                    if (!char.IsDigit(pesel.Text[i]))
+                    {
+                        pesel.Background = Brushes.Red;
+                        dodac = false;
+                    }
+                    else
+                    {
 
                         int[] wagi = { 1, 3, 7, 9, 1, 3, 7, 9, 1, 3 };
                         int suma = 0;
 
-                        for (int j = 0; i < 10; i++)
+                        for (int j = 0; j < 10; j++)
                         {
                             suma += (pesel.Text[j] - '0') * wagi[j];
                         }
@@ -162,75 +201,84 @@ namespace WpfApp1
                         if (cyfrakontrolna != (pesel.Text[10] - '0'))
                         {
                             pesel.Background = Brushes.Red;
+                            dodac = false;
                         }
 
 
-                       
-                            string dzien = pesel.Text.Substring(4, 2);
-                            int miesiac = int.Parse(pesel.Text.Substring(2, 2));
-                            string rok = pesel.Text.Substring(0, 2);
-                            int pelnyrok = 1900;
 
-                            if (miesiac >= 1 && miesiac <= 12)
-                                pelnyrok = 1900;
-                            else if (miesiac >= 21 && miesiac <= 32)
-                            {
-                                pelnyrok = 2000;
-                                miesiac -= 20;
-                            }
-                            else if (miesiac >= 41 && miesiac <= 52)
-                            {
-                                pelnyrok = 2100;
-                                miesiac -= 40;
-                            }
-                            else if (miesiac >= 61 && miesiac <= 72)
-                            {
-                                pelnyrok = 2200;
-                                miesiac -= 60;
-                            }
-                            else if (miesiac >= 81 && miesiac <= 92)
-                            {
-                                pelnyrok = 1800;
-                                miesiac -= 80;
-                            }
+                        string dzien = pesel.Text.Substring(4, 2);
+                        int miesiac = int.Parse(pesel.Text.Substring(2, 2));
+                        string rok = pesel.Text.Substring(0, 2);
+                        int pelnyrok = 1900;
 
-                            string datapesel = pelnyrok.ToString() + "-" + miesiac.ToString("D2") + "-" + dzien; //decimal i 2 liczby, 3-->03, 10-->10
-                            string dataformularz = data.Text.Trim();
-
-                            if (dataformularz == datapesel)
-                            {
-                            pesel.Background = Brushes.White;
-                        }
-                        }
-
-                       
-                        
-                        if (!nr.Text.StartsWith("+48") && nr.Text.Length==9)
+                        if (miesiac >= 1 && miesiac <= 12)
+                            pelnyrok = 1900;
+                        else if (miesiac >= 21 && miesiac <= 32)
                         {
-
-                        nrzmienna = "+48" + nr.Text;
+                            pelnyrok = 2000;
+                            miesiac -= 20;
                         }
-                        else if(nr.Text.Length==11)
-                    {
-                        if (nr.Text.StartsWith("48"))
-                            nrzmienna = "+" + nr.Text;
-                        else
-                            nr.Background = Brushes.Red;
+                        else if (miesiac >= 41 && miesiac <= 52)
+                        {
+                            pelnyrok = 2100;
+                            miesiac -= 40;
+                        }
+                        else if (miesiac >= 61 && miesiac <= 72)
+                        {
+                            pelnyrok = 2200;
+                            miesiac -= 60;
+                        }
+                        else if (miesiac >= 81 && miesiac <= 92)
+                        {
+                            pelnyrok = 1800;
+                            miesiac -= 80;
+                        }
+
+                        string datapesel = pelnyrok.ToString() + "-" + miesiac.ToString("D2") + "-" + dzien; //decimal i 2 liczby, 3-->03, 10-->10
+                        string dataformularz = data.Text.Trim();
+
+                        if (dataformularz == datapesel)
+                        {
+                            pesel.Background = Brushes.White;
+                            dodac = true;
+                        }
                     }
-                        else {
+                }
+
+
+                if (!nr.Text.StartsWith("+48") && nr.Text.Length == 9)
+                {
+
+                    nrzmienna = "+48" + nr.Text;
+                }
+                else if (nr.Text.Length == 11)
+                {
+                    if (nr.Text.StartsWith("48"))
+                        nrzmienna = "+" + nr.Text;
+                    else
                         nr.Background = Brushes.Red;
-
-                        
-                    }
-
-                    nrzmienna = nrzmienna.Replace(" ", "");
+                    dodac = false;
+                }
+                else
+                {
+                    nr.Background = Brushes.Red;
+                    dodac = false;
 
 
                 }
-            }}
-            
+                if (nrzmienna != null)
+                {
+                    nrzmienna = nrzmienna.Replace(" ", "");
+                }
 
-            
+
+
+
+
+            }
+
+
+        } 
             
 
         }
