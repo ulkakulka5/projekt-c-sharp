@@ -1,53 +1,69 @@
-using System.Text;
+using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WpfApp1
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private List<Osoba> listaucznioww = new List<Osoba>();
+
         public MainWindow()
         {
             InitializeComponent();
-            List<string> items = new List<string>();
-            listauczniow.ItemsSource = items;
-        }
-        public class Osoba
-        {
-            public required string Pesel { get; set; }
-            public required string Imie { get; set; }
-
-            public string? Drugieimie { get; set; }  
-            public required string Nazwisko { get; set; }    
-            public required string Data {  get; set; }
-            public string? Numer {  get; set; }
-            public required string Adres { get; set; }
-            public required string Miejscowosc {  get; set; }
-            public required string Kod {  get; set; }
-
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Pop1 pop1 = new Pop1();
-            pop1.ShowDialog();
+            listauczniow.ItemsSource = listaucznioww;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void dodaj(object sender, RoutedEventArgs e)
         {
-            Pop2 pop2 = new Pop2();
+            var pop1 = new Pop1();
+            if (pop1.ShowDialog() == true)
+            {
+                listaucznioww.Add(pop1.NowaOsoba);
+                listauczniow.Items.Refresh();
+            }
+        }
+
+        private void usun(object sender, RoutedEventArgs e)
+        {
+            while (listauczniow.SelectedItems.Count > 0)
+            {
+                listaucznioww.Remove((Osoba)listauczniow.SelectedItems[0]);
+            }
+            listauczniow.Items.Refresh();
+        }
+
+        private void oprogramie(object sender, RoutedEventArgs e)
+        {
+            var pop2 = new Pop2();
             pop2.ShowDialog();
         }
 
-        
+        private void wczytaj(object sender, RoutedEventArgs e)
+        {
+            // 
+        }
+
+        private void zapisz(object sender, RoutedEventArgs e)
+        {
+            //
+        }
+
+        private void wyjscie(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+    }
+
+    public class Osoba
+    {
+        public string? Pesel { get; set; }
+        public string? Imie { get; set; }
+        public string? Drugieimie { get; set; }
+        public string? Nazwisko { get; set; }
+        public string? Data { get; set; }
+        public string? Numer { get; set; }
+        public string? Adres { get; set; }
+        public string? Miejscowosc { get; set; }
+        public string? Kod { get; set; }
     }
 }
