@@ -11,12 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static WpfApp1.MainWindow;
 
 namespace WpfApp1
 {
-    /// <summary>
-    /// Logika interakcji dla klasy Pop1.xaml
-    /// </summary>
+  
     public partial class Pop1 : Window
     {
         public Pop1()
@@ -26,21 +25,28 @@ namespace WpfApp1
 
         private void Button_Click_cancel(object sender, RoutedEventArgs e)
         {
-            Pop3 pop3 = new Pop3();
-            pop3.ShowDialog();
+            if(imie.Text!=null || pesel.Text!=null || drugieimie!=null || nazwisko!=null || data!=null || nr!=null || adres!=null || miejscowosc!=null || kod!=null)
+           {
+                var okno = new Pop3(this);
+                okno.ShowDialog();
+           }
+            else {
+               this.Close();
+            }
         }
-
+        public Osoba? NowaOsoba { get; private set; }
         private void Button_Click_ok(object sender, RoutedEventArgs e)
         {
-            string? imiezmienna;
-            string? peselzmienna;
-            string? drugiezmienna;
-            string? nazwiskozmienna;
-            string? datazmienna;
+
+            string? imiezmienna = null;
+            string? peselzmienna = null;
+            string? drugiezmienna = null;
+            string? nazwiskozmienna = null;
+            string? datazmienna = null;
             string? nrzmienna = null;
-            string? adreszmienna;
-            string? miejscowosczmienna;
-            string? kodzmienna;
+            string? adreszmienna = null;
+            string? miejscowosczmienna = null;
+            string? kodzmienna = null;
             bool dodac = false;
 
             if (!string.IsNullOrEmpty(drugieimie.Text))
@@ -108,8 +114,19 @@ namespace WpfApp1
             }
             else
             {
-                data.Background = Brushes.White;
-                dodac = true;
+                DateTime dataTest;
+                if (!DateTime.TryParse(data.Text, out dataTest))
+                {
+                    data.Background = Brushes.Red;
+                    dodac = false;
+                }
+                else
+                {
+                    datazmienna=data.Text;
+                    data.Background = Brushes.White;
+                    dodac = true;
+                }
+                
             }
 
 
@@ -166,8 +183,17 @@ namespace WpfApp1
 
             else
             {
-                kod.Background = Brushes.White;
-                dodac = true;
+                if (!System.Text.RegularExpressions.Regex.IsMatch(kod.Text, @"^\d{2}-\d{3}$")) // sprawdzanie cyz miesci sie w 12-345
+                {
+                    kod.Background = Brushes.Red;
+                    dodac = false;
+                }
+                else
+                {
+                    kodzmienna = kod.Text;
+                    kod.Background = Brushes.White;
+                    dodac = true;
+                }
             }
 
 
@@ -250,22 +276,19 @@ namespace WpfApp1
                 {
 
                     nrzmienna = "+48" + nr.Text;
+                    dodac = true;
                 }
                 else if (nr.Text.Length == 11)
                 {
                     if (nr.Text.StartsWith("48"))
                         nrzmienna = "+" + nr.Text;
-                    else
-                        nr.Background = Brushes.Red;
-                    dodac = false;
+                    dodac = true;
                 }
-                else
-                {
+                else { 
                     nr.Background = Brushes.Red;
                     dodac = false;
-
-
                 }
+               
                 if (nrzmienna != null)
                 {
                     nrzmienna = nrzmienna.Replace(" ", "");
@@ -276,11 +299,29 @@ namespace WpfApp1
 
 
             }
+            if (dodac)
+            {
+                NowaOsoba = new Osoba
+                {
+                    Imie = imiezmienna,
+                    Drugieimie = string.IsNullOrEmpty(drugiezmienna) ? null : drugiezmienna,
+                    Nazwisko = nazwiskozmienna,
+                    Pesel = peselzmienna,
+                    Data = data.Text,
+                    Numer = nrzmienna,
+                    Adres = adreszmienna,
+                    Miejscowosc = miejscowosczmienna,
+                    Kod = kod.Text
+                };
 
+                this.DialogResult = true; 
+                this.Close();             
+            }
 
-        } 
-            
 
         }
+
+
+    }
     }
 
