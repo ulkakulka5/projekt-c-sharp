@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.Text;
 using System.Windows;
-
+using Microsoft.Win32;
+using System.Collections.ObjectModel;
+using System.IO;
 namespace WpfApp1
 {
 
@@ -155,7 +158,7 @@ namespace WpfApp1
             }
         }
 
-        private void usun(object sender, RoutedEventArgs e)
+        private void usun(object sender, RoutedEventArgs e)//to krotsze z moodla zwieszalo mi komputer
         {
            
             List<Osoba> dousuniecia = new List<Osoba>();
@@ -182,13 +185,80 @@ namespace WpfApp1
 
         private void wczytaj(object sender, RoutedEventArgs e)
         {
-            // Dodaj kod wczytywania danych
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Pliki CSV z separatorem (,)|*.csv|Pliki CSV z separatorem (;)|*.csv";
+            openFileDialog.Title = "Otwórz plik CSV";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                listaucznioww.Clear(); // wyczyść aktualne dane
+
+                string filePath = openFileDialog.FileName;
+                int selectedFilterIndex = openFileDialog.FilterIndex;
+                string delimiter = ";";
+
+                if (selectedFilterIndex == 1)
+                {
+                    delimiter = ",";
+                }
+
+                Encoding encoding = Encoding.UTF8;
+
+                if ( File.Exists(filePath))
+                {
+                    var lines = File.ReadAllLines(filePath, encoding);
+                    foreach (var line in lines)
+                    {
+                        string[] columns = line.Split(delimiter);
+                        if (columns != null)
+                        {
+                            Osoba uczen = new Osoba();
+                            uczen.Imie = columns.ElementAtOrDefault(0);
+                            uczen.Drugieimie = columns.ElementAtOrDefault(1);
+                            uczen.Nazwisko = columns.ElementAtOrDefault(2);
+                            uczen.Pesel = columns.ElementAtOrDefault(3);
+                            uczen.Data = columns.ElementAtOrDefault(4);
+                            uczen.Numer = columns.ElementAtOrDefault(5);
+                            uczen.Adres = columns.ElementAtOrDefault(6);
+                            uczen.Miejscowosc = columns.ElementAtOrDefault(7);
+                            uczen.Kod = columns.ElementAtOrDefault(8);
+                            listaucznioww.Add(uczen);
+
+                        }
+                    }
+                }
+                
+            }listauczniow.Items.Refresh();
         }
 
-        private void zapisz(object sender, RoutedEventArgs e)
+        
+           private void zapisz(object sender, RoutedEventArgs e)
         {
-            // Dodaj kod zapisywania danych
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Pliki CSV z separatorem (,)|*.csv|Pliki CSV z separatorem (;)|*.csv";
+            saveFileDialog.Title = "Zapisz jako plik CSV";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                string delimiter = ";";
+
+                if (saveFileDialog.FilterIndex == 1)
+                {
+                    delimiter = ",";
+                }
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (Osoba item in listauczniow.Items)
+                    {
+                        var row = $"{item.Imie}{delimiter}{item.Drugieimie}{delimiter}{item.Nazwisko}{delimiter}{item.Pesel}{delimiter}{item.Data}{delimiter}{item.Numer}{delimiter}{item.Adres}{delimiter}{item.Miejscowosc}{delimiter}{item.Kod}";
+                        writer.WriteLine(row);
+                    }
+                }
+            }
         }
+
 
         private void wyjscie(object sender, RoutedEventArgs e)
         {
