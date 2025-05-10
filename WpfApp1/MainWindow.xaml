@@ -1,24 +1,44 @@
 <Window x:Class="WpfApp1.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Baza uczniów" Height="593" Width="1031"
+        FontFamily="Segoe UI" FontSize="12"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <DockPanel>
 
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Plik">
+                <MenuItem Header="Wczytaj" Click="wczytaj"/>
+                <MenuItem Header="Zapisz" Click="zapisz"/>
+                <Separator/>
+                <MenuItem Header="Wyjście" Click="wyjscie"/>
+            </MenuItem>
+            <MenuItem Header="Edycja">
+                <MenuItem Header="Dodaj ucznia" Click="dodaj"/>
+                <MenuItem Header="Usuń zaznaczonych" Click="usun"/>
+            </MenuItem>
+            <MenuItem Header="O programie" Click="oprogramie"/>
+        </Menu>
 
-        <ListView x:Name="listauczniow" Margin="10,10,10,50" > 
-            <ListView.View >
+        <ListView x:Name="listauczniow" 
+                  DockPanel.Dock="Top"
+                  Margin="10,10,10,50"
+                  SelectionMode="Multiple" Width="951">
+            <ListView.View>
                 <GridView>
-                    
-                    <GridViewColumn/>
+                    <GridViewColumn Header="Imię" Width="100" DisplayMemberBinding="{Binding Imie}" />
+                    <GridViewColumn Header="Drugie imię" Width="100" DisplayMemberBinding="{Binding Drugieimie}" />
+                    <GridViewColumn Header="Nazwisko" Width="100" DisplayMemberBinding="{Binding Nazwisko}" />
+                    <GridViewColumn Header="PESEL" Width="120" DisplayMemberBinding="{Binding Pesel}" />
+                    <GridViewColumn Header="Data ur." Width="100" DisplayMemberBinding="{Binding Data}" />
+                    <GridViewColumn Header="Telefon" Width="100" DisplayMemberBinding="{Binding Numer}" />
+                    <GridViewColumn Header="Adres" Width="150" DisplayMemberBinding="{Binding Adres}" />
+                    <GridViewColumn Header="Miejscowość" Width="100" DisplayMemberBinding="{Binding Miejscowosc}" />
+                    <GridViewColumn Header="Kod" Width="70" DisplayMemberBinding="{Binding Kod}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button HorizontalAlignment="Right" Margin="0,0,241,14" Content="Plik" VerticalAlignment="Bottom" Width="80"/>
-        <Button Margin="0,0,146,14" Content="Edycja" VerticalAlignment="Bottom" Width="80" Click="Button_Click" HorizontalAlignment="Right"/>
-        <Button HorizontalAlignment="Right" Margin="0,0,56,14" Content="O programie" VerticalAlignment="Bottom" Width="80" Click="Button_Click_1"/>
-    </Grid>
+
+    </DockPanel>
 </Window>
