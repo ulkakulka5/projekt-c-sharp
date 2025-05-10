@@ -25,14 +25,24 @@ namespace WpfApp1
 
         private void Button_Click_cancel(object sender, RoutedEventArgs e)
         {
-            if(imie.Text!=null || pesel.Text!=null || drugieimie!=null || nazwisko!=null || data!=null || nr!=null || adres!=null || miejscowosc!=null || kod!=null)
-           {
+            if (!string.IsNullOrWhiteSpace(imie.Text) ||// inaczej puste="", czyli null bedzie true
+    !string.IsNullOrWhiteSpace(pesel.Text) ||
+    !string.IsNullOrWhiteSpace(drugieimie.Text) ||
+    !string.IsNullOrWhiteSpace(nazwisko.Text) ||
+    !string.IsNullOrWhiteSpace(data.Text) ||
+    !string.IsNullOrWhiteSpace(nr.Text) ||
+    !string.IsNullOrWhiteSpace(adres.Text) ||
+    !string.IsNullOrWhiteSpace(miejscowosc.Text) ||
+    !string.IsNullOrWhiteSpace(kod.Text))
+            {
                 var okno = new Pop3(this);
                 okno.ShowDialog();
-           }
-            else {
-               this.Close();
             }
+            else
+            {
+                Close();
+            }
+
         }
         public Osoba? NowaOsoba { get; private set; }
         private void Button_Click_ok(object sender, RoutedEventArgs e)
@@ -48,7 +58,7 @@ namespace WpfApp1
             string? miejscowosczmienna = null;
             string? kodzmienna = null;
             bool dodac = false;
-
+            
             if (!string.IsNullOrEmpty(drugieimie.Text))
             {
                 drugiezmienna = char.ToUpper(drugieimie.Text.Trim()[0]) + drugieimie.Text.Trim().Substring(1).ToLower();
@@ -96,16 +106,7 @@ namespace WpfApp1
                 dodac = true;
             }
 
-            if (string.IsNullOrEmpty(pesel.Text))
-            {
-                pesel.Background = Brushes.Red;
-                dodac = false;
-            }
-            else
-            {
-                pesel.Background = Brushes.White;
-                dodac = true;
-            }
+            
 
             if (string.IsNullOrEmpty(data.Text))
             {
@@ -122,7 +123,7 @@ namespace WpfApp1
                 }
                 else
                 {
-                    datazmienna=data.Text;
+                    datazmienna = dataTest.ToString("yyyy-MM-dd");
                     data.Background = Brushes.White;
                     dodac = true;
                 }
@@ -197,82 +198,102 @@ namespace WpfApp1
             }
 
 
-            if (pesel.Text.Length != 11)
+            if (pesel.Text.Length == 11 && pesel.Text.All(char.IsDigit))
             {
-                pesel.Background = Brushes.Red;
-                dodac = false;
-            }
-            else
-            {
-                for (int i = 0; i < pesel.Text.Length; i++)
+                int[] wagi = { 1, 3, 7, 9, 1, 3, 7, 9, 1, 3 };
+                int suma = 0;
+
+                for (int i = 0; i < 10; i++)
                 {
-                    if (!char.IsDigit(pesel.Text[i]))
+                    suma += (pesel.Text[i] - '0') * wagi[i];
+                }
+
+                int cyfrakontrolna = (10 - (suma % 10)) % 10;
+
+                if (cyfrakontrolna == (pesel.Text[10] - '0'))
+                {
+                    string dzien = pesel.Text.Substring(4, 2);
+                    int miesiac = int.Parse(pesel.Text.Substring(2, 2));
+                    string rok = pesel.Text.Substring(0, 2);
+
+                    int pelnyrok;
+
+                    if (miesiac >= 1 && miesiac <= 12)
+                        pelnyrok = 1900 + int.Parse(rok);  
+                    else if (miesiac >= 21 && miesiac <= 32)
                     {
-                        pesel.Background = Brushes.Red;
-                        dodac = false;
+                        pelnyrok = 2000 + int.Parse(rok);  
+                        miesiac -= 20;    
+                    }
+                    else if (miesiac >= 41 && miesiac <= 52)
+                    {
+                        pelnyrok = 2100 + int.Parse(rok); 
+                        miesiac -= 40;
                     }
                     else
                     {
+                        pesel.Background = Brushes.Red;
+                        dodac = false;
+                       // MessageBox.Show("Błąd: Miesiąc z PESEL-u jest niepoprawny. Powinien być w przedziale 01-52."); <--- nie dzialalo mi sprawdzanie peselu
+                        return;
+                    }
 
-                        int[] wagi = { 1, 3, 7, 9, 1, 3, 7, 9, 1, 3 };
-                        int suma = 0;
+                    string datapesel = pelnyrok.ToString() + "-" + miesiac.ToString("D2") + "-" + dzien;
 
-                        for (int j = 0; j < 10; j++)
+                    DateTime datapeseldate;
+                    if (DateTime.TryParse(datapesel, out datapeseldate))
+                    {
+                        //MessageBox.Show("Data z PESEL: " + datapeseldate.ToString("yyyy-MM-dd"));
+
+                        DateTime dataformularza;
+                        if (DateTime.TryParse(datazmienna, out dataformularza))
                         {
-                            suma += (pesel.Text[j] - '0') * wagi[j];
+                            if (dataformularza.Date == datapeseldate.Date)
+                            {
+                                pesel.Background = Brushes.White;
+                                dodac = true;
+                              //  MessageBox.Show("Data formularza: " + dataformularza.ToString("yyyy-MM-dd") + "\nData z PESEL: " + datapeseldate.ToString("yyyy-MM-dd") + "\nData zgadza się z PESEL.");
+                            }
+                            else
+                            {
+                                pesel.Background = Brushes.Red;
+                                dodac = false;
+                              //  MessageBox.Show("Data formularza: " + dataformularza.ToString("yyyy-MM-dd") + "\nData z PESEL: " + datapeseldate.ToString("yyyy-MM-dd") + "\nData nie zgadza się z PESEL.");
+                            }
                         }
-
-                        int cyfrakontrolna = (10 - (suma % 10)) % 10;
-
-                        if (cyfrakontrolna != (pesel.Text[10] - '0'))
+                        else
                         {
                             pesel.Background = Brushes.Red;
                             dodac = false;
-                        }
-
-
-
-                        string dzien = pesel.Text.Substring(4, 2);
-                        int miesiac = int.Parse(pesel.Text.Substring(2, 2));
-                        string rok = pesel.Text.Substring(0, 2);
-                        int pelnyrok = 1900;
-
-                        if (miesiac >= 1 && miesiac <= 12)
-                            pelnyrok = 1900;
-                        else if (miesiac >= 21 && miesiac <= 32)
-                        {
-                            pelnyrok = 2000;
-                            miesiac -= 20;
-                        }
-                        else if (miesiac >= 41 && miesiac <= 52)
-                        {
-                            pelnyrok = 2100;
-                            miesiac -= 40;
-                        }
-                        else if (miesiac >= 61 && miesiac <= 72)
-                        {
-                            pelnyrok = 2200;
-                            miesiac -= 60;
-                        }
-                        else if (miesiac >= 81 && miesiac <= 92)
-                        {
-                            pelnyrok = 1800;
-                            miesiac -= 80;
-                        }
-
-                        string datapesel = pelnyrok.ToString() + "-" + miesiac.ToString("D2") + "-" + dzien; //decimal i 2 liczby, 3-->03, 10-->10
-                        string dataformularz = data.Text.Trim();
-
-                        if (dataformularz == datapesel)
-                        {
-                            pesel.Background = Brushes.White;
-                            dodac = true;
+                          //  MessageBox.Show("Błąd przy parsowaniu daty formularza.");
                         }
                     }
+                    else
+                    {
+                        pesel.Background = Brushes.Red;
+                        dodac = false;
+                       // MessageBox.Show("Błąd przy parsowaniu daty z PESEL.");
+                    }
                 }
+                else
+                {
+                    pesel.Background = Brushes.Red;
+                    dodac = false;
+                   // MessageBox.Show("Cyfra kontrolna niepoprawna.");
+                }
+            }
+            else
+            {
+                pesel.Background = Brushes.Red;
+                dodac = false;
+               // MessageBox.Show("PESEL jest niepoprawny. Powinien mieć 11 cyfr.");
+            }
 
 
-                if (!nr.Text.StartsWith("+48") && nr.Text.Length == 9)
+
+
+
+            if (!nr.Text.StartsWith("+48") && nr.Text.Length == 9)
                 {
 
                     nrzmienna = "+48" + nr.Text;
@@ -284,7 +305,7 @@ namespace WpfApp1
                         nrzmienna = "+" + nr.Text;
                     dodac = true;
                 }
-                else { 
+                else if(!string.IsNullOrWhiteSpace(nr.Text)) { 
                     nr.Background = Brushes.Red;
                     dodac = false;
                 }
@@ -298,7 +319,8 @@ namespace WpfApp1
 
 
 
-            }
+          
+
             if (dodac)
             {
                 NowaOsoba = new Osoba
@@ -307,11 +329,11 @@ namespace WpfApp1
                     Drugieimie = string.IsNullOrEmpty(drugiezmienna) ? null : drugiezmienna,
                     Nazwisko = nazwiskozmienna,
                     Pesel = peselzmienna,
-                    Data = data.Text,
-                    Numer = nrzmienna,
+                    Data = datazmienna,
+                    Numer = string.IsNullOrEmpty(nrzmienna) ? null : nrzmienna,
                     Adres = adreszmienna,
                     Miejscowosc = miejscowosczmienna,
-                    Kod = kod.Text
+                    Kod = kodzmienna
                 };
 
                 this.DialogResult = true; 
