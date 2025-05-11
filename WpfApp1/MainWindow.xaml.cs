@@ -13,7 +13,7 @@ namespace WpfApp1
 
         public MainWindow()
         {
-            listaucznioww.Add(new Osoba
+            /* listaucznioww.Add(new Osoba
             {
                 Pesel = "99010112345",
                 Imie = "Anna",
@@ -141,7 +141,7 @@ namespace WpfApp1
                 Adres = "ul. Słoneczna 14",
                 Miejscowosc = "Zielona Góra",
                 Kod = "65-001"
-            });
+            }); */
 
 
             InitializeComponent();
@@ -191,7 +191,7 @@ namespace WpfApp1
 
             if (openFileDialog.ShowDialog() == true)
             {
-                listaucznioww.Clear(); // wyczyść aktualne dane
+                listaucznioww.Clear(); 
 
                 string filePath = openFileDialog.FileName;
                 int selectedFilterIndex = openFileDialog.FilterIndex;
