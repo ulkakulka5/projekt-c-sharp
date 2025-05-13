@@ -250,6 +250,7 @@ namespace WpfApp1
                         {
                             if (dataformularza.Date == datapeseldate.Date)
                             {
+                                peselzmienna = pesel.Text;
                                 pesel.Background = Brushes.White;
                                 dodac = true;
                               //  MessageBox.Show("Data formularza: " + dataformularza.ToString("yyyy-MM-dd") + "\nData z PESEL: " + datapeseldate.ToString("yyyy-MM-dd") + "\nData zgadza się z PESEL.");
@@ -284,6 +285,7 @@ namespace WpfApp1
             }
             else
             {
+                
                 pesel.Background = Brushes.Red;
                 dodac = false;
                // MessageBox.Show("PESEL jest niepoprawny. Powinien mieć 11 cyfr.");
